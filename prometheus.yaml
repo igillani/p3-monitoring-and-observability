@@ -1,0 +1,11 @@
+global:
+  scrape_interval: 15s
+
+scrape_configs:
+  - job_name: 'prometheus'
+    static_configs:
+      - targets: ['localhost:9090']
+
+  - job_name: 'counter_app_k8s'
+    static_configs:
+      - targets: ['host.docker.internal:3000']  # Updated for local Kubernetes access

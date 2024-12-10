@@ -1,0 +1,45 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: counter-app
+spec:
+  replicas: 3
+  selector:
+    matchLabels:
+      app: counter-app
+  template:
+    metadata:
+      labels:
+        app: counter-app
+    spec:
+      containers:
+      - name: counter-app
+        image: counter-app-image:latest  # Ensure the image name and tag are correct
+        imagePullPolicy: IfNotPresent
+        ports:
+        - containerPort: 3000
+        resources:
+          requests:
+            memory: "256Mi"
+            cpu: "500m"
+          limits:
+            memory: "512Mi"
+            cpu: "1"
+        livenessProbe:
+          httpGet:
+            path: /healthz
+            port: 3000
+          initialDelaySeconds: 10
+          periodSeconds: 30
+        readinessProbe:
+          httpGet:
+            path: /healthz
+            port: 3000
+          initialDelaySeconds: 5
+          periodSeconds: 5
+  strategy:
+    type: RollingUpdate
+    rollingUpdate:
+      maxSurge: 1
+      maxUnavailable: 1
+
